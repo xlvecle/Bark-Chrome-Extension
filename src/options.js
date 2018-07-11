@@ -16,7 +16,7 @@ function save_options() {
 
     //Check server if valid
     var server_origin = server_url.substr(0, server_url.lastIndexOf("/", server_url.lastIndexOf("/") - 1));
-    httpGetAsync(server_origin+ "/ping", function (data) {
+    httpGetAsync(server_origin + "/ping", function (data) {
       if (data == 'error') {
         alert('Invalid Server URL!')
       } else {
