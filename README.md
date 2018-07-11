@@ -19,6 +19,12 @@ https://github.com/Finb/go-tools/blob/master/Bark.go
 
 这是一款chrome插件能帮你方便地把**网页上的文本或者网址**推送到Bark手机端。
 
+安装说明：
+
++ 下载release目录中的src.crx，https://github.com/xlvecle/Bark-Chrome-Extension/raw/master/release/src.crx
+
++ 打开chrome插件管理页面，拖进去安装即可
+
 使用说明：
 
 + 直接点击Bark图标可以push当前网页的网址
