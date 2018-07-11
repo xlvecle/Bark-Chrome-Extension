@@ -36,6 +36,8 @@ function save_options() {
               status.textContent = '';
             }, 750);
           });
+        } else {
+          alert("Invalid Server URL!" + data.message);
         }
       }
     })
