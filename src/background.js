@@ -45,7 +45,7 @@ function sendMsg(content){
 			// chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
 		} else {
 			full_server_url = items.server_url;
-			httpGetAsync(full_server_url + encodeURIComponent(content), function () {
+			httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=1", function () {
 				var notification = new Notification("Message Sent",
 				 {body: content, icon: "bark_128.png"});
 			});
