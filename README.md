@@ -21,9 +21,11 @@ https://github.com/Finb/go-tools/blob/master/Bark.go
 
 安装说明：
 
-+ ~~下载release目录中的src.crx，https://github.com/xlvecle/Bark-Chrome-Extension/raw/master/release/src.crx~~ 请直接前往Chrome应用商店安装: https://chrome.google.com/webstore/detail/bark/pmlkbdbpglkgbgopghdcmohdcmladeii
++ 请直接前往Chrome应用商店安装: https://chrome.google.com/webstore/detail/bark/pmlkbdbpglkgbgopghdcmohdcmladeii
 
-+ 打开chrome插件管理页面，拖进去安装即可
++ ~~下载release目录中的src.crx，https://github.com/xlvecle/Bark-Chrome-Extension/raw/master/release/src.crx~~ 
+
++ ~~打开chrome插件管理页面，拖进去安装即可~~
 
 使用说明：
 
