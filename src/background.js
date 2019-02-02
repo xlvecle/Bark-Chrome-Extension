@@ -1,23 +1,29 @@
 // chrome.browserAction.onClicked.addListener(sendUrl);
-chrome.browserAction.onClicked.addListener(function(tab) {
-  chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
-  	console.log(response);
-    if (response != null && response.data != '') {
-    	var selectedText = response.data;
-    	console.log("send selected text: " + selectedText)
-    	sendMsg(response.data);
-    } else {
-    	console.log("send url")
-    	sendUrl(tab);
-    }
-  });
-});
+// chrome.browserAction.onClicked.addListener(function(tab) {
+//   chrome.tabs.sendRequest(tab.id, {method: "getSelection"}, function(response){
+//   	console.log(response);
+//     if (response != null && response.data != '') {
+//     	var selectedText = response.data;
+//     	console.log("send selected text: " + selectedText)
+//     	sendMsg(response.data);
+//     } else {
+//     	console.log("send url")
+//     	sendUrl(tab);
+//     }
+//   });
+// });
 
-chrome.contextMenus.create({
-  title: "Push To iPhone", 
-  contexts:["selection"], 
-  onclick: getword
-});
+chrome.storage.sync.get({
+	server_urls: []}, function(items) {
+		for (const it of items.server_urls) {
+			chrome.contextMenus.create({
+				title: "Push To iPhone " + it, 
+				contexts:["selection"], 
+				onclick: getword
+			});
+		}
+	}
+);
 
 //send selected text
 function getword(info, tab) {
@@ -37,14 +43,14 @@ function sendUrl(tab) {
 function sendMsg(content){
 	var full_server_url;
 	chrome.storage.sync.get({
-	  server_url: ''
+	  server_urls: []
 	}, function(items) {
-		if (items.server_url === '') {
+		if (items.server_urls === '' | items.server_urls.length === 0) {
 			alert("please set server_url in options！");
 			chrome.tabs.create({ url: "options.html" });
 			// chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
 		} else {
-			full_server_url = items.server_url;
+			full_server_url = items.server_urls[0];
 			httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=1", function () {
 				var notification = new Notification("Message Sent",
 				 {body: content, icon: "bark_128.png"});

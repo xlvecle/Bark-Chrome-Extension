@@ -35,6 +35,7 @@
             "48": "bark_48.png",
             "128": "bark_128.png"
         },
-        "default_title": "Bark"
+        "default_title": "Bark",
+        "default_popup": "popup.html"
     }
 }

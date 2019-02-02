@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head><title>Bark Settings</title></head>
+
+<head>
+	<title>Bark Settings</title>
+</head>
+
 <body>
 
-<label>
-	Server URL: 
-	<input type="" name="" id="server_url" style="width: 300px" placeholder="https://day.app/xxxkeyxxxx/">
-</label>
+	<h3>Devices</h3>
+	<span>If you have multiple addresses set up, please restart chrome to make the context menu take effect.</span>
+	<div id="urls">
+	</div>
 
-<div id="status"></div>
-<button id="save">Save</button>
+	<hr>
+	<label>
+		Push URL:
+		<input type="" name="" id="server_url" style="width: 300px" placeholder="https://day.app/xxxkeyxxxx/">
+	</label>
+	<button id="add">Add</button>
 
-<script src="options.js"></script>
+	<div id="status"></div>
+
+	<script src="jquery-1.10.2.min.js"></script>
+	<script src="options.js"></script>
 </body>
+
 </html>
