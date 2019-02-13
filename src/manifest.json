@@ -9,10 +9,12 @@
         "tabs",
         "storage",
         "notifications",
-        "contextMenus"
+        "contextMenus",
+        "clipboardRead"
     ],
     "background" : {
-        "scripts" : ["background.js"]
+        "page": "background.html",
+        "persistent": true
     },
     "content_scripts": [
       {
