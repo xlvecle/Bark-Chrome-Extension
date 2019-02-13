@@ -102,14 +102,16 @@ chrome.runtime.onMessage.addListener(
 			chrome.storage.sync.get({
 				server_urls: [],
 			}, function (items) {
-				for (const it of items.server_urls) {
-					chrome.contextMenus.create({
-						title: "Push To iPhone " + it.server_name,
-						contexts: ["selection"],
-						onclick: getword,
-						id: it.server_url
-					});
-				}
+				chrome.contextMenus.removeAll(function() {
+					for (const it of items.server_urls) {
+						chrome.contextMenus.create({
+							title: "Push To iPhone " + it.server_name,
+							contexts: ["selection"],
+							onclick: getword,
+							id: it.server_url
+						});
+					}
+				});
 			});
 		sendResponse({
 			farewell: "goodbye"
