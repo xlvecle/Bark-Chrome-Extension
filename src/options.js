@@ -3,6 +3,46 @@ var data = {
 }
 var data = {}
 var dataServerURLs = []
+
+
+/**
+ * default push content
+ */
+var radios = document.getElementsByName("default_push_content");
+  for(i in radios) {
+    radios[i].onclick = function(it) {
+        data.defaultPushContent = this.value;
+    }
+}
+
+Object.defineProperty(data, 'defaultPushContent', {
+  configurable: true,
+  get: function() {
+    return defaultPushContent;
+  },
+  set: function(value) {
+    console.log(value);
+    defaultPushContent = value;
+    document.getElementById(value).checked=true;
+
+    //save to chrome.storage
+    chrome.storage.sync.set({
+      default_push_content: this.defaultPushContent,
+    }, function() {
+      // Update status to let user know options were saved.
+      var status = document.getElementById('status');
+      status.textContent = 'Options saved.';
+      setTimeout(function() {
+        status.textContent = '';
+      }, 200);
+    });
+  }
+})
+
+
+/**
+ * set serverURLs
+ */
 Object.defineProperty(data, 'serverURLs', {
     configurable: true,
     get: function() {
@@ -48,12 +88,12 @@ function ValidURL(str) {
 // Restores select box and checkbox state using the preferences
 // stored in chrome.storage.
 function restore_options() {
-  // Use default value color = 'red' and likesColor = true.
   chrome.storage.sync.get({
     server_urls: [],
-    likesColor: true
+    default_push_content: "clipboard"
   }, function(items) {
     data.serverURLs = items.server_urls;
+    data.defaultPushContent = items.default_push_content;
     // document.getElementById('server_url').value = items.server_urls;
   });
 }

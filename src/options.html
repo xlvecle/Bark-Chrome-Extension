@@ -3,9 +3,31 @@
 
 <head>
 	<title>Bark Settings</title>
+
+	<style>
+		#status {
+			background-color: #dfdfdf;
+			width: 200px;
+			font-size: 1.4em;
+		}
+	</style>
 </head>
 
 <body>
+	<div id="status"></div>
+
+	<h3>Default Push Content</h3>
+	<span>This option is used to control what is pushed when the icon on the menu bar is clicked by default.</span>
+	<div>
+		<input type="radio" id="clipboard" name="default_push_content" value="clipboard">
+		<label for="clipboard">Clipboard</label>
+	</div>
+
+	<div>
+		<input type="radio" id="URL" name="default_push_content" value="URL">
+		<label for="URL">Current page URL</label>
+	</div>
+	<hr>
 
 	<h3>Devices</h3>
 	<span>If you have multiple addresses set up, please restart chrome to make the context menu take effect.</span>
@@ -14,12 +36,10 @@
 
 	<hr>
 	<label>
-		Push URL:
+		New device push URL:
 		<input type="" name="" id="server_url" style="width: 300px" placeholder="https://day.app/xxxkeyxxxx/">
 	</label>
 	<button id="add">Add</button>
-
-	<div id="status"></div>
 
 	<script src="jquery-1.10.2.min.js"></script>
 	<script src="options.js"></script>

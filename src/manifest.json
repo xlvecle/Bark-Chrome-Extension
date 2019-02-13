@@ -9,10 +9,12 @@
         "tabs",
         "storage",
         "notifications",
-        "contextMenus"
+        "contextMenus",
+        "clipboardRead"
     ],
     "background" : {
-        "scripts" : ["background.js"]
+        "page": "background.html",
+        "persistent": true
     },
     "content_scripts": [
       {
@@ -35,7 +37,6 @@
             "48": "bark_48.png",
             "128": "bark_128.png"
         },
-        "default_title": "Bark",
-        "default_popup": "popup.html"
+        "default_title": "Bark"
     }
 }
