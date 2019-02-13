@@ -62,7 +62,7 @@ function sendMsg(content, full_server_url = "") {
 		server_urls: []
 	}, function (items) {
 		if (items.server_urls === '' | items.server_urls.length === 0) {
-			alert("please set server_url in options！");
+			alert("please set server_url in options!");
 			chrome.tabs.create({
 				url: "options.html"
 			});
