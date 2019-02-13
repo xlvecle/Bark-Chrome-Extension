@@ -52,7 +52,7 @@ Object.defineProperty(data, 'serverURLs', {
       dataServerURLs = value;
       var str = '<ul>';
       value.forEach(function(it) {
-        str += '<li class="url"><strong>'+ it + '</strong> <button>delete</button></li>';
+        str += '<li class="url"><u>' + it.server_name +'</u> <strong>'+ it.server_url + '</strong> <button>delete</button></li>';
       }); 
 
       str += '</ul>';
@@ -65,6 +65,10 @@ Object.defineProperty(data, 'serverURLs', {
         server_urls: this.serverURLs,
       }, function() {
         // Update status to let user know options were saved.
+        chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+          console.log(response.farewell);
+        });
+
         var status = document.getElementById('status');
         status.textContent = 'Options saved.';
         setTimeout(function() {
@@ -108,6 +112,7 @@ function delete_server(e) {
 
 // Saves options to chrome.storage
 function addServer() {
+  var server_name = document.getElementById('server_name').value;
   var server_url = document.getElementById('server_url').value;
 
   if (ValidURL(server_url)) { //check url if valid 
@@ -122,7 +127,7 @@ function addServer() {
         console.log(httpData);
         if (httpData.code === 200 && httpData.message === 'pong') {
           console.log('Valid Server');
-          data.serverURLs.push(server_url);
+          data.serverURLs.push({"server_name": server_name, "server_url": server_url});
           //TODO ugly listen the push array change 
           data.serverURLs = data.serverURLs
         } else {

@@ -1,15 +1,3 @@
-chrome.storage.sync.get({
-	server_urls: [],
-}, function (items) {
-	for (const it of items.server_urls) {
-		chrome.contextMenus.create({
-			title: "Push To iPhone " + it,
-			contexts: ["selection"],
-			onclick: getword
-		});
-	}
-});
-
 chrome.browserAction.onClicked.addListener(function (tab) {
 	chrome.tabs.sendRequest(tab.id, {
 		method: "getSelection"
@@ -38,8 +26,9 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 
 //send selected text
 function getword(info, tab) {
+	console.log("menu " + info.menuItemId + " was clicked.");
 	console.log("Word " + info.selectionText + " was clicked.");
-	sendMsg(info.selectionText);
+	sendMsg(info.selectionText, info.menuItemId);
 }
 
 //send current page url
@@ -68,8 +57,7 @@ function sendClipboardData() {
 	sendMsg(result);
 }
 
-function sendMsg(content) {
-	var full_server_url;
+function sendMsg(content, full_server_url = "") {
 	chrome.storage.sync.get({
 		server_urls: []
 	}, function (items) {
@@ -80,7 +68,10 @@ function sendMsg(content) {
 			});
 			// chrome.tabs.create({ 'url': 'chrome://extensions/?options=' + chrome.runtime.id });
 		} else {
-			full_server_url = items.server_urls[0];
+			if (full_server_url === "") {
+				full_server_url = items.server_urls[0].server_url;
+			}
+			console.log(full_server_url);
 			httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=1", function () {
 				var notification = new Notification("Message Sent", {
 					body: content,
@@ -100,3 +91,27 @@ function httpGetAsync(theUrl, callback) {
 	xmlHttp.open("GET", theUrl, true); // true for asynchronous 
 	xmlHttp.send(null);
 }
+
+
+chrome.runtime.onMessage.addListener(
+	function (request, sender, sendResponse) {
+		console.log(sender.tab ?
+			"from a content script:" + sender.tab.url :
+			"from the extension");
+		if (request.greeting == "hello")
+			chrome.storage.sync.get({
+				server_urls: [],
+			}, function (items) {
+				for (const it of items.server_urls) {
+					chrome.contextMenus.create({
+						title: "Push To iPhone " + it.server_name,
+						contexts: ["selection"],
+						onclick: getword,
+						id: it.server_url
+					});
+				}
+			});
+		sendResponse({
+			farewell: "goodbye"
+		});
+	});
