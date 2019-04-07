@@ -1,9 +1,9 @@
 var data = {
-  serverURLs: []
+  serverURLs: [],
+  dataExtraParams: {}
 }
-var data = {}
 var dataServerURLs = []
-
+let dataExtraParams = {}
 
 /**
  * default push content
@@ -58,7 +58,7 @@ Object.defineProperty(data, 'serverURLs', {
       str += '</ul>';
       document.getElementById('urls').innerHTML = str;
       //set delete button 
-      $("ul").on("click", "button", delete_server);
+      $("#urls").on("click", "button", delete_server);
 
       //save to chrome.storage
       chrome.storage.sync.set({
@@ -79,6 +79,21 @@ Object.defineProperty(data, 'serverURLs', {
     }
 })
 
+Object.defineProperty(data, 'dataExtraParams', {
+  configurable: true,
+  get: () => {
+    return dataExtraParams;
+  },
+  set: value => {
+    dataExtraParams = value;
+
+    // save to chrome.storage
+    chrome.storage.sync.set({
+      dataExtraParams,
+    });
+  }
+})
+
 function ValidURL(str) {
   var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
   if(!regex .test(str)) {
@@ -94,10 +109,15 @@ function ValidURL(str) {
 function restore_options() {
   chrome.storage.sync.get({
     server_urls: [],
-    default_push_content: "clipboard"
+    default_push_content: "clipboard",
+    dataExtraParams,
   }, function(items) {
+    data.dataExtraParams = items.dataExtraParams;
     data.serverURLs = items.server_urls;
     data.defaultPushContent = items.default_push_content;
+    $('#extra_params_url').val(items.dataExtraParams.url);
+    $('#extra_params_copy_title').val(items.dataExtraParams.pushTitle);
+    $('#extra_params_copy').prop('checked', items.dataExtraParams.copyCheck);
     // document.getElementById('server_url').value = items.server_urls;
   });
 }
@@ -141,6 +161,16 @@ function addServer() {
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('add').addEventListener('click',
     addServer);
+document.getElementById('save-extra-params').addEventListener(
+  'click',
+  () => {
+    let url = document.getElementById('extra_params_url').value;
+    let copyCheck = $('#extra_params_copy:checked').val() === 'on';
+    let pushTitle = document.getElementById('extra_params_copy_title').value;
+    data.dataExtraParams = {
+      url, copyCheck, pushTitle,
+    }
+  });
 
 function httpGetAsync(theUrl, callback) {
     var xmlHttp = new XMLHttpRequest();
