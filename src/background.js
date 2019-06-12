@@ -92,6 +92,26 @@ function httpGetAsync(theUrl, callback) {
 	xmlHttp.send(null);
 }
 
+function registerContextMenus() {
+	chrome.storage.sync.get({
+		server_urls: [],
+	}, function (items) {
+		console.log(items);
+		chrome.contextMenus.removeAll(function() {
+			console.log("items" + items[0]);
+			for (const it of items.server_urls) {
+				chrome.contextMenus.create({
+					title: "Push To iPhone " + it.server_name,
+					contexts: ["selection"],
+					onclick: getword,
+					id: it.server_url
+				});
+			}
+		});
+	});
+}
+
+registerContextMenus();
 
 chrome.runtime.onMessage.addListener(
 	function (request, sender, sendResponse) {
@@ -99,20 +119,7 @@ chrome.runtime.onMessage.addListener(
 			"from a content script:" + sender.tab.url :
 			"from the extension");
 		if (request.greeting == "hello")
-			chrome.storage.sync.get({
-				server_urls: [],
-			}, function (items) {
-				chrome.contextMenus.removeAll(function() {
-					for (const it of items.server_urls) {
-						chrome.contextMenus.create({
-							title: "Push To iPhone " + it.server_name,
-							contexts: ["selection"],
-							onclick: getword,
-							id: it.server_url
-						});
-					}
-				});
-			});
+			registerContextMenus();
 		sendResponse({
 			farewell: "goodbye"
 		});
