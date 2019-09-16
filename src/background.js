@@ -59,7 +59,8 @@ function sendClipboardData() {
 
 function sendMsg(content, full_server_url = "") {
 	chrome.storage.sync.get({
-		server_urls: []
+		server_urls: [],
+		dataExtraParams: [],
 	}, function (items) {
 		if (items.server_urls === '' | items.server_urls.length === 0) {
 			alert("please set server_url in options!");
@@ -72,7 +73,20 @@ function sendMsg(content, full_server_url = "") {
 				full_server_url = items.server_urls[0].server_url;
 			}
 			console.log(full_server_url);
-			httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=1", function () {
+			let params = new URLSearchParams();
+			params.append('automaticallyCopy', '1');
+			if (items.dataExtraParams.url) {
+				params.append('url', items.dataExtraParams.url);
+			}
+			if (items.dataExtraParams.copyCheck) {
+				params.append('copy', content);
+			}
+			if (items.dataExtraParams.pushTitle && items.dataExtraParams.pushTitle.length > 0) {
+				content = items.dataExtraParams.pushTitle;
+			}
+			let url = `${full_server_url}${encodeURIComponent(content)}?${params}`;
+			console.log(url)
+			httpGetAsync(url, function () {
 				var notification = new Notification("Message Sent", {
 					body: content,
 					icon: "bark_128.png"
