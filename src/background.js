@@ -72,15 +72,54 @@ function sendMsg(content, full_server_url = "") {
 				full_server_url = items.server_urls[0].server_url;
 			}
 			console.log(full_server_url);
-			httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=1", function () {
-				var notification = new Notification("Message Sent", {
-					body: content,
-					icon: "bark_128.png"
-				});
-			});
+
+			var notify_callback = function () {
+					var notification = new Notification("Message Sent", {
+						body: content,
+						icon: "bark_128.png"
+					});
+				};
+
+			if (full_server_url.startsWith("http")) {
+				// iPhone push
+				httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=1", notify_callback);
+			} else {
+				// Android push
+				pushAndroidMsg(full_server_url, content, true, notify_callback);
+			}
+
+			
 		};
 	});
 }
+
+function pushAndroidMsg(theToken, content, autoCopy, callback) {
+	var fcmServerURL = "https://fcm.googleapis.com/fcm/send"
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.onreadystatechange = function () {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			callback(xmlHttp.responseText);
+	}
+
+	xmlHttp.open("POST", fcmServerURL, true);
+	//发送合适的请求头信息
+	xmlHttp.setRequestHeader("Content-type", "application/json");
+	xmlHttp.setRequestHeader("Authorization", "key=AIzaSyAd-JC3NxVeGRHyo5ZZB2BUmhSA7Z_IqHY")
+
+	var sendData = {
+		"to": theToken,
+		"collapse_key": "type_a",
+		"data": {
+			"body": content,
+			"title": "PushMessage",
+			"autoCopy": 1,
+			"msgType": "empty"
+		}
+	}
+	xmlHttp.send(JSON.stringify(sendData));
+
+}
+
 
 function httpGetAsync(theUrl, callback) {
 	var xmlHttp = new XMLHttpRequest();
@@ -101,7 +140,7 @@ function registerContextMenus() {
 			console.log("items" + items[0]);
 			for (const it of items.server_urls) {
 				chrome.contextMenus.create({
-					title: "Push To iPhone " + it.server_name,
+					title: "Push To Device " + it.server_name,
 					contexts: ["selection"],
 					onclick: getword,
 					id: it.server_url
