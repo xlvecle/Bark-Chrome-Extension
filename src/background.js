@@ -1,46 +1,55 @@
 var auto_copy_flag = "0"
 
+
+function global_push(response, tab) {
+    chrome.storage.sync.get({
+        default_push_content: "clipboard",
+        auto_copy: "no"
+    }, function(items) {
+        console.log(items);
+        if (items.auto_copy === "yes") {
+            auto_copy_flag = "1"
+        } else {
+            auto_copy_flag = "0"
+        }
+        //if default is URL, push URL
+        if (items.default_push_content === "URL") {
+            console.log(response);
+            if (response != null && response.data != '') {
+                var selectedText = response.data;
+                console.log("send selected text: " + selectedText)
+                sendMsg(response.data);
+            } else {
+                console.log("send url" + tab)
+                sendUrl(tab);
+            }
+        } else if (items.default_push_content === "clipboard") {
+            // if default is clipboard, push clipboard data
+            sendClipboardData();
+        }
+    });
+}
+
+
 chrome.browserAction.onClicked.addListener(function (tab) {
 	chrome.tabs.sendMessage(tab.id, {
 		method: "getSelection"
-	}, function (response) {
-		chrome.storage.sync.get({
-			default_push_content: "clipboard",
-			auto_copy: "no"
-		}, function (items) {
-			console.log(items);
-			if (items.auto_copy === "yes") {
-				auto_copy_flag = "1"
-			} else {
-				auto_copy_flag = "0"
-			}
-			//if default is URL, push URL
-			if (items.default_push_content === "URL") {
-				console.log(response);
-				if (response != null && response.data != '') {
-					var selectedText = response.data;
-					console.log("send selected text: " + selectedText)
-					sendMsg(response.data);
-				} else {
-					console.log("send url")
-					sendUrl(tab);
-				}
-			} else if (items.default_push_content === "clipboard") {
-				// if default is clipboard, push clipboard data
-				sendClipboardData();
-			}
-		});
-	});
+	}, global_push)
 });
 
 //send selected text
 function getword(info, tab) {
 	console.log("menu " + info.menuItemId + " was clicked.");
 	console.log("Word " + info.selectionText + " was clicked.");
-	if (typeof info.selectionText == 'undefined') {
-		sendMsg(getClipboardData(), info.menuItemId);
+	console.log(info);
+	if (info.mediaType == "image") {
+		sendMsg(info.srcUrl, info.menuItemId);
 	} else {
-		sendMsg(info.selectionText, info.menuItemId);
+		if (typeof info.selectionText == 'undefined') {
+			global_push(null);
+		} else {
+			sendMsg(info.selectionText, info.menuItemId);
+		}
 	}
 	
 }
@@ -90,6 +99,10 @@ function sendMsg(content, full_server_url = "") {
 			if (full_server_url === "") {
 				full_server_url = items.server_urls[0].server_url;
 			}
+			if (full_server_url.startsWith("selection#")) {
+				full_server_url.replace(/selection#/g, "")
+			}
+
 			console.log(full_server_url);
 
 			var notify_callback = function () {
@@ -170,6 +183,17 @@ function registerContextMenus() {
 					// contexts: ["selection"],
 					onclick: getword,
 					id: it.server_url
+				});
+			}
+		});
+		chrome.contextMenus.removeAll(function() {
+			console.log("items" + items[0]);
+			for (const it of items.server_urls) {
+				chrome.contextMenus.create({
+					title: "Send To Device " + it.server_name,
+					contexts: ["selection", "image"],
+					onclick: getword,
+					id: "selection#" + it.server_url
 				});
 			}
 		});
