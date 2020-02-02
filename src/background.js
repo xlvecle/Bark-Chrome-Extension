@@ -1,5 +1,5 @@
 chrome.browserAction.onClicked.addListener(function (tab) {
-	chrome.tabs.sendRequest(tab.id, {
+	chrome.tabs.sendMessage(tab.id, {
 		method: "getSelection"
 	}, function (response) {
 		chrome.storage.sync.get({
