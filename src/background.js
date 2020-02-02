@@ -1,10 +1,19 @@
+var auto_copy_flag = "0"
+
 chrome.browserAction.onClicked.addListener(function (tab) {
 	chrome.tabs.sendMessage(tab.id, {
 		method: "getSelection"
 	}, function (response) {
 		chrome.storage.sync.get({
-			default_push_content: "clipboard"
+			default_push_content: "clipboard",
+			auto_copy: "no"
 		}, function (items) {
+			console.log(items);
+			if (items.auto_copy === "yes") {
+				auto_copy_flag = "1"
+			} else {
+				auto_copy_flag = "0"
+			}
 			//if default is URL, push URL
 			if (items.default_push_content === "URL") {
 				console.log(response);
@@ -92,10 +101,10 @@ function sendMsg(content, full_server_url = "") {
 
 			if (full_server_url.startsWith("http")) {
 				// iPhone push
-				httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=1", notify_callback);
+				httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=" + auto_copy_flag, notify_callback);
 			} else {
 				// Android push
-				pushAndroidMsg(full_server_url, content, true, notify_callback);
+				pushAndroidMsg(full_server_url, content, notify_callback);
 			}
 
 			
@@ -103,7 +112,7 @@ function sendMsg(content, full_server_url = "") {
 	});
 }
 
-function pushAndroidMsg(theToken, content, autoCopy, callback) {
+function pushAndroidMsg(theToken, content, callback) {
 	var fcmServerURL = "https://fcm.googleapis.com/fcm/send"
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.onreadystatechange = function () {
@@ -122,7 +131,7 @@ function pushAndroidMsg(theToken, content, autoCopy, callback) {
 		"data": {
 			"body": content,
 			"title": "PushMessage",
-			"autoCopy": 1,
+			"autoCopy": auto_copy_flag,
 			"msgType": "empty"
 		}
 	}
@@ -144,8 +153,15 @@ function httpGetAsync(theUrl, callback) {
 function registerContextMenus() {
 	chrome.storage.sync.get({
 		server_urls: [],
+		default_push_content: "clipboard",
+		auto_copy: "no"
 	}, function (items) {
 		console.log(items);
+		if (items.auto_copy === "yes") {
+			auto_copy_flag = "1"
+		} else {
+			auto_copy_flag = "0"
+		}
 		chrome.contextMenus.removeAll(function() {
 			console.log("items" + items[0]);
 			for (const it of items.server_urls) {

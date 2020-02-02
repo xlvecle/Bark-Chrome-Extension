@@ -36,8 +36,52 @@ Object.defineProperty(data, 'defaultPushContent', {
         status.textContent = '';
       }, 200);
     });
+    // Update status to let user know options were saved.
+    chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+      console.log(response.farewell);
+    });
   }
 })
+
+/**
+ * autocopy
+ */
+
+ var radios = document.getElementsByName("auto_copy");
+ for(i in radios) {
+   radios[i].onclick = function(it) {
+     data.autoCopy = this.value;
+   }
+ }
+
+ Object.defineProperty(data, 'autoCopy', {
+   configurable: true,
+   get: function() {
+     return autoCopy;
+   },
+   set: function(value) {
+     console.log(value);
+     autoCopy = value;
+     document.getElementById(value).checked=true;
+
+     //save to chrome.storage
+     chrome.storage.sync.set({
+       auto_copy: this.autoCopy,
+     }, function() {
+       // Update status to let user know options were saved.
+       var status = document.getElementById('status');
+       status.textContent = 'Options saved.';
+       setTimeout(function() {
+         status.textContent = '';
+       }, 200);
+     });
+
+     // Update status to let user know options were saved.
+     chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+       console.log(response.farewell);
+     });
+   }
+ })
 
 
 /**
@@ -109,10 +153,12 @@ function ValidURL(str) {
 function restore_options() {
   chrome.storage.sync.get({
     server_urls: [],
-    default_push_content: "clipboard"
+    default_push_content: "clipboard",
+    auto_copy: "no"
   }, function(items) {
     data.serverURLs = items.server_urls;
     data.defaultPushContent = items.default_push_content;
+    data.autoCopy = items.auto_copy;
     // document.getElementById('server_url').value = items.server_urls;
   });
 }
