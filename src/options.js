@@ -9,10 +9,10 @@ var dataServerURLs = []
  * default push content
  */
 var radios = document.getElementsByName("default_push_content");
-  for(i in radios) {
-    radios[i].onclick = function(it) {
-        data.defaultPushContent = this.value;
-    }
+for(i in radios) {
+  radios[i].onclick = function(it) {
+    data.defaultPushContent = this.value;
+  }
 }
 
 Object.defineProperty(data, 'defaultPushContent', {
@@ -52,7 +52,7 @@ Object.defineProperty(data, 'serverURLs', {
       dataServerURLs = value;
       var str = '<ul>';
       value.forEach(function(it) {
-        str += '<li class="url"><u>' + it.server_name +'</u> <strong>'+ it.server_url + '</strong> <button>delete</button></li>';
+        str += '<li class="url"><u>' + it.server_name +'</u> <button>delete</button> <div style="width:500px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"><strong>'+ it.server_url + '</strong></div></li>';
       }); 
 
       str += '</ul>';
@@ -78,6 +78,21 @@ Object.defineProperty(data, 'serverURLs', {
 
     }
 })
+
+/**
+ * select device type
+ */
+var radios = document.getElementsByName("device");
+for(i in radios) {
+  radios[i].onclick = function(it) {
+    if (this.value === "Android") {
+      document.getElementById("server_url").placeholder = "Android FCM Token"
+    }
+    if (this.value === "iPhone") {
+      document.getElementById("server_url").placeholder = "Bark Push URL: https://day.app/xxxkeyxxxx/"
+    }
+  }
+}
 
 function ValidURL(str) {
   var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
@@ -114,6 +129,13 @@ function delete_server(e) {
 function addServer() {
   var server_name = document.getElementById('server_name').value;
   var server_url = document.getElementById('server_url').value;
+
+  if (document.getElementsByName("device")[1].checked == true) {
+    console.log('Valid Android Token');
+    data.serverURLs.push({"server_name": server_name, "server_url": server_url});
+    data.serverURLs = data.serverURLs
+    return
+  }
 
   if (ValidURL(server_url)) { //check url if valid 
 

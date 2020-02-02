@@ -31,19 +31,34 @@
 		<label for="URL">Current page URL</label>
 	</div>
 	<hr>
-
+	<h4>Tips</h4>
+	<ul>
+		<li>Now also supports Android devices, you can download the mobile applications from here</li>
+		<li>If you have multiple addresses set up, plese use right-click menu to push messages to the specified device.</li>
+	</ul>
 	<h3>Devices</h3>
-	<span>If you have multiple addresses set up, plese use right-click menu to push messages to the specified device.</span>
 	<div id="urls">
 	</div>
 
 	<hr>
-	<label>
+	<h5>
 		New device push URL:
-		<input type="" name="" id="server_name" style="width: 100px" placeholder="Alias">
-		<input type="" name="" id="server_url" style="width: 300px" placeholder="https://day.app/xxxkeyxxxx/">
-	</label>
-	<button id="add">Add</button>
+	</h5>
+	<div>
+		<input type="radio" id="iPhone" name="device" value="iPhone" checked="checked">
+		<label for="iPhone">iPhone</label>
+	</div>
+	<div>
+		<input type="radio" id="Android" name="device" value="Android">
+		<label for="Android">Android</label>
+	</div>
+	<p>
+		<label>
+			<input type="" name="" id="server_name" style="width: 100px" placeholder="Alias">
+			<input type="" name="" id="server_url" style="width: 300px" placeholder="https://day.app/xxxkeyxxxx/">
+			<button id="add">Add</button>
+		</label>
+	</p>
 
 	<script src="jquery-1.10.2.min.js"></script>
 	<script src="options.js"></script>
