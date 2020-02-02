@@ -28,7 +28,12 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 function getword(info, tab) {
 	console.log("menu " + info.menuItemId + " was clicked.");
 	console.log("Word " + info.selectionText + " was clicked.");
-	sendMsg(info.selectionText, info.menuItemId);
+	if (typeof info.selectionText == 'undefined') {
+		sendMsg(getClipboardData(), info.menuItemId);
+	} else {
+		sendMsg(info.selectionText, info.menuItemId);
+	}
+	
 }
 
 //send current page url
@@ -45,6 +50,10 @@ function sendUrl(tab) {
 
 //send clipboard data
 function sendClipboardData() {
+	sendMsg(getClipboardData());
+}
+
+function getClipboardData() {
 	var result = '';
 	var sandbox = document.getElementById('sandbox');
 	sandbox.value = '';
@@ -54,8 +63,9 @@ function sendClipboardData() {
 	}
 	sandbox.value = '';
 	console.log("clipboard conetent: " + result);
-	sendMsg(result);
+	return result;
 }
+
 
 function sendMsg(content, full_server_url = "") {
 	chrome.storage.sync.get({
@@ -141,7 +151,7 @@ function registerContextMenus() {
 			for (const it of items.server_urls) {
 				chrome.contextMenus.create({
 					title: "Push To Device " + it.server_name,
-					contexts: ["selection"],
+					// contexts: ["selection"],
 					onclick: getword,
 					id: it.server_url
 				});
