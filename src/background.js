@@ -43,7 +43,7 @@ function getword(info, tab) {
 	console.log("Word " + info.selectionText + " was clicked.");
 	console.log(info);
 	if (info.mediaType == "image") {
-		sendMsg(info.srcUrl, info.menuItemId);
+		sendMsg(info.srcUrl, info.menuItemId, msgType="image");
 	} else {
 		if (typeof info.selectionText == 'undefined') {
 			global_push(null);
@@ -85,7 +85,7 @@ function getClipboardData() {
 }
 
 
-function sendMsg(content, full_server_url = "") {
+function sendMsg(content, full_server_url = "", msgType = "normal") {
 	chrome.storage.sync.get({
 		server_urls: []
 	}, function (items) {
@@ -117,7 +117,7 @@ function sendMsg(content, full_server_url = "") {
 				httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=" + auto_copy_flag, notify_callback);
 			} else {
 				// Android push
-				pushAndroidMsg(full_server_url, content, notify_callback);
+				pushAndroidMsg(full_server_url, content, notify_callback, msgType);
 			}
 
 			
@@ -125,7 +125,7 @@ function sendMsg(content, full_server_url = "") {
 	});
 }
 
-function pushAndroidMsg(theToken, content, callback) {
+function pushAndroidMsg(theToken, content, callback, msgType="normal") {
 	var fcmServerURL = "https://fcm.googleapis.com/fcm/send"
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.onreadystatechange = function () {
@@ -145,7 +145,7 @@ function pushAndroidMsg(theToken, content, callback) {
 			"body": content,
 			"title": "PushMessage",
 			"autoCopy": auto_copy_flag,
-			"msgType": "empty"
+			"msgType": msgType
 		}
 	}
 	xmlHttp.send(JSON.stringify(sendData));
