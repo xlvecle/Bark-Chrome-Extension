@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>Bark Settings</title>
+	<title>Sword Tab</title>
 
 	<style>
 		#status {
@@ -19,32 +19,11 @@
 <body>
 	<div id="status"></div>
 
-	<h3>Default Push Content</h3>
-	<span>This option is used to control what is pushed when the icon on the menu bar is clicked by default.</span>
-	<div>
-		<input type="radio" id="clipboard" name="default_push_content" value="clipboard">
-		<label for="clipboard">Clipboard</label>
-	</div>
-
-	<div>
-		<input type="radio" id="URL" name="default_push_content" value="URL">
-		<label for="URL">Current page URL</label>
-	</div>
-	<hr>
-
-	<h3>Devices</h3>
-	<span>If you have multiple addresses set up, plese use right-click menu to push messages to the specified device.</span>
+	<h3>URLS</h3>
 	<div id="urls">
+		<ul>
+		</ul>
 	</div>
-
-	<hr>
-	<label>
-		New device push URL:
-		<input type="" name="" id="server_name" style="width: 100px" placeholder="Alias">
-		<input type="" name="" id="server_url" style="width: 300px" placeholder="https://day.app/xxxkeyxxxx/">
-	</label>
-	<button id="add">Add</button>
-
 	<script src="jquery-1.10.2.min.js"></script>
 	<script src="options.js"></script>
 </body>

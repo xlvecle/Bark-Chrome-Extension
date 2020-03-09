@@ -1,13 +1,14 @@
 {
-    "name": "Bark",
-    "version": "1.2.1",
+    "name": "SwordTab",
+    "version": "1.0.0",
     "manifest_version": 2,
-    "description": "push to iPhone",
+    "description": "Now your tabs can sync",
     "permissions": [
         "*://*/*",
         "activeTab",
         "tabs",
         "storage",
+        "unlimitedStorage",
         "notifications",
         "contextMenus",
         "clipboardRead"
@@ -22,20 +23,18 @@
         "js": ["contentScript.js"]
       }
     ],
-    "web_accessible_resources": [
-       "bark_48.png"
-     ],
+
     "icons": {
-        "16": "bark_16.png",
-        "48": "bark_48.png",
-        "128": "bark_128.png"
+        "16": "sword.png",
+        "48": "sword.png",
+        "128": "sword.png"
     },
     "options_page": "options.html",
     "browser_action": {
         "default_icon": {
-            "16": "bark_16.png",
-            "48": "bark_48.png",
-            "128": "bark_128.png"
+            "16": "sword.png",
+            "48": "sword.png",
+            "128": "sword.png"
         },
         "default_title": "Bark"
     }
