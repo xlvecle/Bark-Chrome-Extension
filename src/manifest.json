@@ -4,7 +4,6 @@
     "manifest_version": 2,
     "description": "Now your tabs can sync",
     "permissions": [
-        "*://*/*",
         "activeTab",
         "tabs",
         "storage",
@@ -17,13 +16,6 @@
         "page": "background.html",
         "persistent": true
     },
-    "content_scripts": [
-      {
-        "matches": ["*://*/*"],
-        "js": ["contentScript.js"]
-      }
-    ],
-
     "icons": {
         "16": "sword.png",
         "48": "sword.png",

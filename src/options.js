@@ -4,9 +4,7 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-chrome.storage.sync.get( {
-  tabData: [],
-}, function (data) {
+function showStorageData(data) {
   fullHTML = "";
   console.log(data);
 
@@ -22,7 +20,7 @@ chrome.storage.sync.get( {
 
     fullHTML += str;
   }
-  document.getElementById('urls').innerHTML = fullHTML;
+  document.getElementById('urls').innerHTML += fullHTML;
   //set restore button 
   var restoreButtons = document.getElementsByClassName("restore");
   for (var i=0; i < restoreButtons.length; i++) {
@@ -48,5 +46,15 @@ chrome.storage.sync.get( {
         });  
       }
   };
+}
 
+chrome.storage.sync.get( {
+  tabData: [],
+}, function (data) {
+  chrome.storage.local.get( {
+    tabData: [],
+  }, function (local_data) {
+    showStorageData(data);
+    showStorageData(local_data);
+  });
 });      

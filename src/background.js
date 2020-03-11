@@ -1,4 +1,4 @@
-let MAX_SYNC_DATA_SIZE = 500;
+let MAX_SYNC_DATA_SIZE = 15;
 
 chrome.browserAction.onClicked.addListener(
 	function (tab) {
@@ -8,7 +8,7 @@ chrome.browserAction.onClicked.addListener(
 			});
 			currentDatas = [];
 		    for (var i = 0; i < tabs.length; i++) {
-		    	if (!tabs[i].url.startsWith("chrome-extension://")) {
+		    	if (!tabs[i].url.startsWith("1chrome-extension://")) {
 		    		chrome.tabs.remove(tabs[i].id);
 		    		currentTime = new Date();
 
