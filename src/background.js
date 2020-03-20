@@ -112,7 +112,7 @@ function sendMsg(content, full_server_url = "", msgType = "normal") {
 					});
 				};
 
-			if (full_server_url.startsWith("http")) {
+			if (full_server_url.startsWith("http") || full_server_url.startsWith("https")) {
 				// iPhone push
 				httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=" + auto_copy_flag, notify_callback);
 			} else {
