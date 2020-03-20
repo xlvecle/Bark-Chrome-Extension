@@ -185,24 +185,9 @@ function addServer() {
 
   if (ValidURL(server_url)) { //check url if valid 
 
-    //Check server if valid
-    var server_origin = server_url.substr(0, server_url.lastIndexOf("/", server_url.lastIndexOf("/") - 1));
-    httpGetAsync(server_origin + "/ping", function (httpData) {
-      if (httpData == 'error') {
-        alert('Invalid Server URL!')
-      } else {
-        httpData = JSON.parse(httpData);
-        console.log(httpData);
-        if (httpData.code === 200 && httpData.message === 'pong') {
-          console.log('Valid Server');
-          data.serverURLs.push({"server_name": server_name, "server_url": server_url});
-          //TODO ugly listen the push array change 
-          data.serverURLs = data.serverURLs
-        } else {
-          alert("Invalid Server URL!" + data.message);
-        }
-      }
-    })
+    console.log('Valid Server');
+    data.serverURLs.push({"server_name": server_name, "server_url": server_url});
+    data.serverURLs = data.serverURLs
   }
 }
 

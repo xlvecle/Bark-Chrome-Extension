@@ -100,7 +100,7 @@ function sendMsg(content, full_server_url = "", msgType = "normal") {
 				full_server_url = items.server_urls[0].server_url;
 			}
 			if (full_server_url.startsWith("selection#")) {
-				full_server_url.replace(/selection#/g, "")
+				full_server_url = full_server_url.replace(/selection#/g, "")
 			}
 
 			console.log(full_server_url);
