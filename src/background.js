@@ -1,7 +1,7 @@
 var auto_copy_flag = "0"
 
 
-function global_push(response, tab) {
+function global_push(response, tab, url = "") {
     chrome.storage.sync.get({
         default_push_content: "clipboard",
         auto_copy: "no"
@@ -18,14 +18,14 @@ function global_push(response, tab) {
             if (response != null && response.data != '') {
                 var selectedText = response.data;
                 console.log("send selected text: " + selectedText)
-                sendMsg(response.data);
+                sendMsg(response.data, url);
             } else {
                 console.log("send url" + tab)
-                sendUrl(tab);
+                sendUrl(tab, url);
             }
         } else if (items.default_push_content === "clipboard") {
             // if default is clipboard, push clipboard data
-            sendClipboardData();
+            sendClipboardData(url);
         }
     });
 }
@@ -46,7 +46,7 @@ function getword(info, tab) {
 		sendMsg(info.srcUrl, info.menuItemId, msgType="image");
 	} else {
 		if (typeof info.selectionText == 'undefined') {
-			global_push(null);
+			global_push(null, null, url=info.menuItemId);
 		} else {
 			sendMsg(info.selectionText, info.menuItemId);
 		}
@@ -55,20 +55,20 @@ function getword(info, tab) {
 }
 
 //send current page url
-function sendUrl(tab) {
+function sendUrl(tab, url="") {
 	chrome.tabs.query({
 		'active': true,
 		'lastFocusedWindow': true
 	}, function (tabs) {
 		var currentUrl = tabs[0].url;
-		sendMsg(currentUrl);
+		sendMsg(currentUrl,url);
 		console.log(currentUrl);
 	});
 }
 
 //send clipboard data
-function sendClipboardData() {
-	sendMsg(getClipboardData());
+function sendClipboardData(url="") {
+	sendMsg(getClipboardData(),url);
 }
 
 function getClipboardData() {
