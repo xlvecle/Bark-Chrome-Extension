@@ -1,7 +1,7 @@
 var auto_copy_flag = "0"
 
 
-function global_push(response, tab, url = "") {
+function global_push(response, tab) {
     chrome.storage.sync.get({
         default_push_content: "clipboard",
         auto_copy: "no"
@@ -18,14 +18,14 @@ function global_push(response, tab, url = "") {
             if (response != null && response.data != '') {
                 var selectedText = response.data;
                 console.log("send selected text: " + selectedText)
-                sendMsg(response.data, url);
+                sendMsg(response.data);
             } else {
                 console.log("send url" + tab)
-                sendUrl(tab, url);
+                sendUrl(tab);
             }
         } else if (items.default_push_content === "clipboard") {
             // if default is clipboard, push clipboard data
-            sendClipboardData(url);
+            sendClipboardData();
         }
     });
 }
@@ -46,7 +46,7 @@ function getword(info, tab) {
 		sendMsg(info.srcUrl, info.menuItemId, msgType="image");
 	} else {
 		if (typeof info.selectionText == 'undefined') {
-			global_push(null, null, url=info.menuItemId);
+			global_push(null);
 		} else {
 			sendMsg(info.selectionText, info.menuItemId);
 		}
@@ -55,20 +55,20 @@ function getword(info, tab) {
 }
 
 //send current page url
-function sendUrl(tab, url="") {
+function sendUrl(tab) {
 	chrome.tabs.query({
 		'active': true,
 		'lastFocusedWindow': true
 	}, function (tabs) {
 		var currentUrl = tabs[0].url;
-		sendMsg(currentUrl,url);
+		sendMsg(currentUrl);
 		console.log(currentUrl);
 	});
 }
 
 //send clipboard data
-function sendClipboardData(url="") {
-	sendMsg(getClipboardData(),url);
+function sendClipboardData() {
+	sendMsg(getClipboardData());
 }
 
 function getClipboardData() {
@@ -100,7 +100,7 @@ function sendMsg(content, full_server_url = "", msgType = "normal") {
 				full_server_url = items.server_urls[0].server_url;
 			}
 			if (full_server_url.startsWith("selection#")) {
-				full_server_url.replace(/selection#/g, "")
+				full_server_url = full_server_url.replace(/selection#/g, "")
 			}
 
 			console.log(full_server_url);
@@ -112,7 +112,7 @@ function sendMsg(content, full_server_url = "", msgType = "normal") {
 					});
 				};
 
-			if (full_server_url.startsWith("http")) {
+			if (full_server_url.startsWith("http") || full_server_url.startsWith("https")) {
 				// iPhone push
 				httpGetAsync(full_server_url + encodeURIComponent(content) + "?automaticallyCopy=" + auto_copy_flag, notify_callback);
 			} else {
@@ -134,7 +134,7 @@ function pushAndroidMsg(theToken, content, callback, msgType="normal") {
 	}
 
 	xmlHttp.open("POST", fcmServerURL, true);
-	//å‘é€åˆé€‚çš„è¯·æ±‚å¤´ä¿¡æ¯
+	//发送合适的请求头信息
 	xmlHttp.setRequestHeader("Content-type", "application/json");
 	xmlHttp.setRequestHeader("Authorization", "key=AIzaSyAd-JC3NxVeGRHyo5ZZB2BUmhSA7Z_IqHY")
 
